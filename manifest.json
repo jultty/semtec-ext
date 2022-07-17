@@ -1,0 +1,47 @@
+{
+
+  "manifest_version": 2,
+  "name": "semtec",
+  "version": "0.1",
+
+  "description": "Demo extension for semtec",
+  "homepage_url": "https://semtec.netlify.app",
+  "browser_specific_settings": {
+        "gecko": {
+                "id": "firefox-ext@semtec.netlify.app"
+                  }
+  },
+
+  "icons": {
+    "48": "icons/semtec-48.png",
+    "98": "icons/semtec-98.png"
+  },
+  
+  "permissions": [
+      "activeTab",
+      "*://*/*"
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/semtec-48.png",
+    "default_title": "semtec",
+    "default_popup": "ui/ui.html"
+  },
+
+  "web_accessible_resources": [
+    "icons/semtec-48.png",
+    "icons/semtec-96.png",
+    "termos.json"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["messenger.js"]
+    }
+  ],
+
+  "background": {
+    "scripts": ["semtec.js"]
+  }
+}
