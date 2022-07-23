@@ -53,11 +53,39 @@ function buscarConteudo(conteudo, dict) {
     let termosEncontrados = [];
     
     for (const i of it) {
-        if (conteudo.includes(i[0]) && !(termosEncontrados.includes(i[0]))) {
-            console.log(`termo encontrado: ${i[0]} - ${dict.get(i[0]).significado}`);
-            termosEncontrados.push(i[0]);
+        if (!(termosEncontrados.includes(i[0]))) {
+            if (!(i[0].includes(" "))) { // i[0] tem uma única palavra
+                if (conteudo.includes(i[0])) {
+                    termosEncontrados.push(i[0]);
+                }
+            } else { // i[0] tem mais de uma palavra
+                let termoTemp = i[0].split(/\s+/);
+
+                    let inicioBusca = 0;
+                    while (!(termosEncontrados.includes(i[0]))) {
+                    if (conteudo.includes(termoTemp[0], inicioBusca)) {
+                        let posicaoEncontrada = conteudo.indexOf(termoTemp[0], inicioBusca);
+
+                        let iguais = 0;
+                        for (const j of termoTemp) {
+                            if (conteudo[posicaoEncontrada] === j) {
+                                iguais++;
+                            } else {
+                            }
+                            posicaoEncontrada++;
+                        }
+
+                        if (iguais === termoTemp.length) {
+                            termosEncontrados.push(i[0]);
+                        } else {
+                            inicioBusca = posicaoEncontrada++;
+                        }
+                    }
+                }
+            }
         }
     }
+    console.log(termosEncontrados);
     return termosEncontrados;
 }
 
