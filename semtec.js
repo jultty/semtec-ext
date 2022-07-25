@@ -26,24 +26,11 @@ function mapearTermos(dict, json) {
 let termos = new Map();
 obterJSON();
 
-// comunicação com o front-end
-
-function obterTermo(termo, dict) {
-    return dict.get(termo);
-}
-
-function definirTermo(termo, dict) {
-    return dict.get(termo).significado;
-}
-
-function linkarTermo(termo, dict) {
-    return dict.get(termo).url;
-}
+// processamento
 
 function tratarConteudo(conteudo) {
     conteudo = conteudo.replace(/[.,:;\\?!#!&\*\-\/()]/g,"");
     conteudo = conteudo.toLowerCase();
-    conteudo = conteudo.split(/\s+/);
     return conteudo;
 }
 
@@ -53,49 +40,19 @@ function buscarConteudo(conteudo, dict) {
     let termosEncontrados = [];
     
     for (const i of it) {
-        if (!(termosEncontrados.includes(i[0]))) {
-            if (!(i[0].includes(" "))) { // i[0] tem uma única palavra
-                if (conteudo.includes(i[0])) {
-                    termosEncontrados.push(i[0]);
-                }
-            } else { // i[0] tem mais de uma palavra
-                let termoTemp = i[0].split(/\s+/);
-
-                    let inicioBusca = 0;
-                    while (!(termosEncontrados.includes(i[0]))) {
-                    if (conteudo.includes(termoTemp[0], inicioBusca)) {
-                        let posicaoEncontrada = conteudo.indexOf(termoTemp[0], inicioBusca);
-
-                        let iguais = 0;
-                        for (const j of termoTemp) {
-                            if (conteudo[posicaoEncontrada] === j) {
-                                iguais++;
-                            } else {
-                            }
-                            posicaoEncontrada++;
-                        }
-
-                        if (iguais === termoTemp.length) {
-                            termosEncontrados.push(i[0]);
-                        } else {
-                            inicioBusca = posicaoEncontrada++;
-                        }
-                    }
-                }
+        if (!(termosEncontrados.includes(i[0])) &&
+            conteudo.match(new RegExp(`\\b(${i[0]})\\b`, 'i'))) {
+                termosEncontrados.push(i[0]);
             }
         }
-    }
     console.log(termosEncontrados);
     return termosEncontrados;
 }
 
-function handleMessage(request, sender, sendResponse) {
-    // console.log(`semtec.js recebeu uma mensagem de ${
-    //     Object.values(sender)}: ${Object.values(request)
-    // }`);
+// comunicação com o front-end
 
+function handleMessage(request, sender, sendResponse) {
     let response  = buscarConteudo(request.content, termos);
-    // console.log(`semtec.js enviando resposta: ${response}`);
     sendResponse(response);
 }
 
